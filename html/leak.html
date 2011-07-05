@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+ <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+ <script type="text/javascript">
+var clickcounter = 0;
+var clickdelay = 0;
+var clickstart = 0;
+var clicklimit = 0;
+
+$(document).ready(function(){
+ // Create a table with 500 rows
+ var tmp = ['<table>'];
+    for (var i = 0; i < 500; i++) {
+  tmp.push('<tr id="product_id',i+1,'" class="w editable">');
+  tmp.push('<td class="bin">',i+1,'</td>');
+  tmp.push('<td class="productcell" colspan="2">Sample Product Name<div class="desc"></div></td>');
+  tmp.push('<td class="percentcost">28%</td>');
+  tmp.push('<td class="cost">22.50</td>');
+  tmp.push('<td class="quantity">12</td>');
+  tmp.push('<td class="status">Active</td>');
+  tmp.push('<td class="glass">23</td>');
+  tmp.push('<td class="bottle">81</td>');
+  tmp.push('</tr>');
+ }
+ tmp.push('</table>');
+ $('body').append(tmp.join(''));
+
+ // Live bind a click event handler to enter Inline Edit
+ $('tr.w').live('click', function(event){
+  var jrow = $(this);
+  if (!jrow.find('.inedBottle').length) {
+   createInlineEdit(jrow);
+  }
+ });
+
+ // This is just to emulate 100 clicks on consecutive rows
+ $('#slow100').click(function() {
+  clickstart = clickcounter;
+  clickcounter++;
+  var jrow = $('#product_id'+clickcounter);
+  createInlineEdit(jrow);
+  clickdelay = 1000;
+  clicklimit = 100;
+  window.setTimeout(clickemulate, clickdelay);
+ });
+
+ // This is just to emulate 100 rapid clicks on consecutive rows
+ $('#fast100').click(function() {
+  clickstart = clickcounter;
+  clickcounter++;
+  var jrow = $('#product_id'+clickcounter);
+  createInlineEdit(jrow);
+  clickdelay = 20;
+  clicklimit = 100;
+  window.setTimeout(clickemulate, clickdelay);
+ });
+
+});
+
+// Emulate clicking on the next row and waiting the delay period to click on the next
+function clickemulate() {
+ if ((clickcounter - clickstart) % clicklimit == 0) return;
+ nextInlineEdit($('#product_id'+ clickcounter));
+ clickcounter++;
+ window.setTimeout(clickemulate, clickdelay);
+}
+
+// Enter inline edit mode for the row
+function createInlineEdit(jrow, lastjrow) {
+ removeInlineEdit(lastjrow); 
+
+ jrow.removeClass('editable').addClass('editing'); 
+
+// Find each of the cells
+ var productcell = jrow.find('.productcell');
+ var bincell = jrow.find('.bin');
+ var percentcostcell = jrow.find('.percentcost');
+ var costcell = jrow.find('.cost');
+ var glasscell = jrow.find('.glass');
+ var bottlecell = jrow.find('.bottle');
+ var descdiv = productcell.find('.desc');
+
+ var product_id = jrow.attr('id').replace(/^product_id/,'');
+
+// Replace with an input
+ bincell.html('<input class="inedBin" name="bin'+product_id+'" value="'+bincell.text()+'">');
+ costcell.html('<input class="inedCost" name="cost'+product_id+'" value="'+costcell.text()+'">');
+ glasscell.html('<input class="inedGlass" name="glass'+product_id+'" value="'+glasscell.text()+'">');
+ bottlecell.html('<input class="inedBottle" name="bottle'+product_id+'" value="'+bottlecell.text()+'">');
+ var tmp = [];
+// For one input, insert a few divs and spans as well as the inputs.
+// Note: the div.ined and the spans and input underneath are the ones remaining as orphans in sIEve
+ tmp.push('<div class="ined">');
+ tmp.push('<span>Inserted Span 1</span>');
+ tmp.push('<span>Inserted Span 2</span>');
+ tmp.push('<input class="inedVintage" name="vintage',product_id,'" value="">');
+ tmp.push('<input class="inedSize" name="size',product_id,'" value="">');
+ tmp.push('</div>');
+ tmp.push('<div class="descinner">');
+ tmp.push('<input class="inedDesc" name="desc'+product_id+'" value="'+descdiv.text()+'">');
+ tmp.push('</div>');
+
+ descdiv.html(tmp.join(''));
+
+ jrow.find('.inedVintage').focus().select();
+}
+
+// Exit the inline edit mode
+function removeInlineEdit(jrow) {
+ if (jrow && jrow.length) {
+ } else {
+  jrow = $('tr.w.editing');
+ }
+
+ jrow.removeClass('editing').addClass('editable');
+
+// Note: the div.ined and the spans and input underneath are the ones remaining as orphans in sIEve
+// sIEve steps: load page, click "Clear in use", click "100 clicks fast" on the page
+// If the remove is commented out, then sIEve does not report any div.ined as orphans and reports 11 in use (div.ined all appear to be garbage collected)
+// If the remove is uncommented, then sIEve reports 99 of the div.ined as orphans and reports 506 in use (none of the div.ined garbage collected)
+
+ jrow.find('.ined').remove(); 
+ jrow.find('.inedBin').each(function() {
+  $(this).replaceWith(this.defaultValue);
+ });
+ jrow.find('.inedGlass').each(function() {
+  $(this).replaceWith(this.defaultValue);
+ });
+ jrow.find('.inedBottle').each(function() {
+  $(this).replaceWith(this.defaultValue);
+ });
+ jrow.find('.inedCost').each(function() {
+  $(this).replaceWith(this.defaultValue);
+ });
+ jrow.find('.inedDesc').each(function() {
+// Since the div.ined is under here, this also removes it.
+  $(this).closest('.desc').html(this.defaultValue);  
+ });
+}
+
+function nextInlineEdit(jrow) {
+ var nextjrow = jrow.nextAll('tr.w').first();
+ if (nextjrow.length) {
+  createInlineEdit(nextjrow, jrow);
+ } else {
+  removeInlineEdit(jrow);
+ }
+}
+
+ </script>
+ <style>
+table {margin-top: 30px;}
+td {border: 1px dashed grey;}
+button#slow100 {position: fixed; left: 0px; width: 115px;}
+button#fast100 {position: fixed; left: 120px; width: 115px;}
+ </style>
+</head>
+<body>
+ <button id="slow100">100 clicks slow</button>
+ <button id="fast100">100 clicks fast</button>
+</body>
+</html>
