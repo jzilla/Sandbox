@@ -1,6 +1,6 @@
 .sortWrap {
     display:block;
-    width:1800px;
+    width:1200px;
     height:500px;
     border: 1px solid #bbbbbb;
     position: relative;
@@ -15,7 +15,7 @@
 }
 .positionBar {
     display:block;
-    width:1600px;
+    width:1200px;
     height:4px;
     position:relative;
     border: 1px solid #bbbbbb;
@@ -39,11 +39,12 @@
 }
 #store {
     display:block;
+    display:none;
     width:4px;
     height:4px;
     position: absolute;
     background-color: #a7a7a7; 
-    left:0;
+    left:0    
 }
 .sorted {
     background-color: #55ff55;

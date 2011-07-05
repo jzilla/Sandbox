@@ -7,14 +7,11 @@ var QuickSort = function(array) {
     this.currentDiv = $('#position');
     this.compareDiv = $('#compareWith');
     this.storeDiv = $('#store');
+    this.currentDiv.show();
+    this.storeDiv.show();
+    this.compareDiv.show();
 }
-
-QuickSort.prototype.log = function() {
-    console.log("QuickSort State: ----------------");
-    console.log("position: " + this.pos);
-    console.log("length  : " + this.end);
-}
-
+extend(QuickSort, Sort);
 QuickSort.prototype.getSort = function(left, right) {
     var state = 0;
     var pos  = left;
@@ -40,9 +37,7 @@ QuickSort.prototype.getSort = function(left, right) {
                     this.compareDiv.css('left', pos * dx);
                     this.storeDiv.css('left', store *dx);
                     if (this.a[pos].height() < pivotValue) {
-                        this.a[pos].css('left', store * dx);
-                        this.a[store].css('left', pos * dx);
-                        this.a.swap(pos, store);
+                        this.swap(pos, store);
                         store++;
                     }
                     pos++;
@@ -116,12 +111,10 @@ QuickSort.prototype.unscope = function (left, right) {
 QuickSort.prototype.step = function() {
     if (this.callStack == 0 ) {
         this.finished = true;
-        console.log("DONE");
         return;
     }
     var x = this.callStack[0].call(this);
-    if (x)
-        this.callStack.shift();
+    if (x) this.callStack.shift();
 }
 
 
