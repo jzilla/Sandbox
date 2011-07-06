@@ -10,7 +10,7 @@ var CocktailSort = function(array) {
     this.currentDiv = $('#position');
     this.compareDiv = $('#compareWith');
 }
-
+extend(CocktailSort, Sort);
 CocktailSort.prototype.step = function() {
     if (this.forward) {
         var nextPos = this.pos + 1;
@@ -18,9 +18,7 @@ CocktailSort.prototype.step = function() {
         this.compareDiv.css('left', nextPos *dx);
         if (nextPos < this.end) {
             if (this.a[this.pos].height() > this.a[nextPos].height()) {
-                this.a[this.pos].css('left', nextPos * dx);
-                this.a[nextPos].css('left', this.pos*dx);
-                this.a.swap(this.pos, nextPos);
+                this.swap(this.pos, nextPos);
                 this.changedFlag=1 ;
             }
             this.pos = nextPos;
@@ -43,9 +41,7 @@ CocktailSort.prototype.step = function() {
         this.compareDiv.css('left', nextPos *dx);
         if (nextPos > this.start) {
             if (this.a[this.pos].height() < this.a[nextPos].height()) {
-                this.a[this.pos].css('left', nextPos * dx);
-                this.a[nextPos].css('left', this.pos*dx);
-                this.a.swap(this.pos, nextPos);
+                this.swap(this.pos, nextPos);
                 this.changedFlag=1 ;
             }
             this.pos = nextPos; 

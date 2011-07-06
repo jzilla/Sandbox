@@ -8,16 +8,14 @@ var BubbleSort = function(array) {
     this.currentDiv = $('#position');
     this.compareDiv = $('#compareWith');
 }
-
+extend(BubbleSort, Sort);
 BubbleSort.prototype.step = function() {
     var nextPos = this.pos + 1;
     this.currentDiv.css('left', this.pos *dx);
     this.compareDiv.css('left', nextPos *dx);
     if (nextPos < this.end) {
         if (this.a[this.pos].height() > this.a[nextPos].height()) {
-            this.a[this.pos].css('left', nextPos * dx);
-            this.a[nextPos].css('left', this.pos*dx);
-            this.a.swap(this.pos, nextPos);
+            this.swap(this.pos, nextPos);
             this.changedFlag=1 ;
         }
         this.pos = nextPos;

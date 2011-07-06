@@ -6,8 +6,11 @@ Array.prototype.swap = function(p1, p2) {
 	this[p2] = tmp;
 }
 
+
+
 extend = function(subClass, baseClass) {
-	function inheritance() {}
+	function inheritance() {
+	}
 	inheritance.prototype = baseClass.prototype;
 	subClass.prototype = new inheritance();
 	subClass.prototype.constructor = subClass;
@@ -26,20 +29,26 @@ $(function() {
 	var items = $('.sortable', wrap);
 	var scale = .0478;
 	var ha = h / 2;
+	// var gen = new RandomGenerator(0, h, no);
+	// var gen = new LinearGenerator(0, h, no);
+	var gen = new SinWavGenerator(0, h, no, 12);
+	var sizes = gen.getArray();
+
 	items.each(function(ind, item) {
 		item = $(item);
 		a.push(item);
-		item.height(Math.floor(Math.cos(ind * scale) * ha) + ha);
+		item.height(sizes[ind]);
 		// item.height(Math.floor( (Math.random() * h) +1));
-		// item.height(1Math.floor( (Math.abs(Math.sin(Math.random()*Math.PI/2)
+		// item.height(Math.floor( (Math.abs(Math.sin(Math.random()*Math.PI/2)
 		// * h)) +1));
 		item.css('left', dx * ind);
 	});
 
-	//sort = new GnomeSort(a);
-	// sort = new BubbleSort(a);
-	// sort = new CocktailSort(a);
+	// sort = new GnomeSort(a);
+	//sort = new BubbleSort(a);
+	//sort = new CocktailSort(a);
 	// sort = new CombSort(a);
+	//sort = new SelectionSort(a);
 	sort = new QuickSort(a);
 
 	$('#step').click(function() {
@@ -55,7 +64,7 @@ var x = function() {
 		sort.step();
 		var t = parseInt($('#delay').val());
 		setTimeout(x, t);
-	}else {
+	} else {
 		console.log("Sort completed");
 	}
 }
@@ -71,4 +80,6 @@ Sort.prototype.swap = function(p1, p2) {
 	this.a[p2] = tmp;
 }
 
-var baseSort = new Sort();
+var Initilizer = function() {
+
+}
